@@ -1,6 +1,6 @@
 # Instagram Following Tracker Chrome Extension
 
-**Instagram Following Tracker** là một tiện ích mở rộng Chrome giúp bạn **theo dõi sự thay đổi trong danh sách người theo dõi (following) trên Instagram**. Với tiện ích này, bạn có thể biết được ai là người mới theo dõi bạn và ai đã bỏ theo dõi kể từ lần kiểm tra trước.
+**Instagram Following Tracker** là một tiện ích mở rộng Chrome giúp bạn **theo dõi sự thay đổi trong danh sách người theo dõi (following) trên Instagram của người khác**. Với tiện ích này, bạn có thể biết được ai là người mới theo dõi và ai đã bỏ theo dõi kể từ lần kiểm tra trước.
 
 
 <img width="1160" height="737" alt="image" src="https://github.com/user-attachments/assets/5cee2a5f-b68e-41b6-827a-2efc02938943" />
