@@ -1,3 +1,26 @@
+function getUserIDTracking() {
+    const scripts = Array.from(document.querySelectorAll("script"));
+    let profileId = null;
+
+    scripts.forEach(script => {
+        const text = script.textContent;
+
+        const match = text.match(/"page_logging":\s*(\{.*?\})\s*,\s*"qr"/s);
+        if (match) {
+            try {
+                const pageLogging = JSON.parse(match[1]);
+                if (pageLogging.params) {
+                    profileId = pageLogging.params.profile_id;
+                }
+            } catch (err) {
+                console.error("Parse error:", err);
+            }
+        }
+    });
+
+    return profileId;
+}
+
 function getIgAppId() {
     if (window._sharedData && window._sharedData.config) {
         return window._sharedData.config.viewerId ? "936619743392459" : null;
@@ -13,7 +36,7 @@ function getIgAppId() {
     return "936619743392459";
 }
 
-function getUsernameTracking(){
+function getUsernameTracking() {
     const url = window.location.pathname;
     const parts = url.split('/').filter(Boolean);
 
@@ -22,8 +45,9 @@ function getUsernameTracking(){
 }
 
 async function fetchAllFollowing(maxId = 0) {
+    const profileId = getUserIDTracking();
     const xIgAppId = getIgAppId();
-    const url = `https://www.instagram.com/api/v1/friendships/5539954990/following/?count=50&max_id=${maxId}`;
+    const url = `https://www.instagram.com/api/v1/friendships/${profileId}/following/?count=50&max_id=${maxId}`;
     try {
         const response = await fetch(url, {
             method: "GET",
