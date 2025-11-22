@@ -1,29 +1,6 @@
-function getUserIDTracking() {
-    const scripts = Array.from(document.querySelectorAll("script"));
-    let profileId = null;
-
-    scripts.forEach(script => {
-        const text = script.textContent;
-
-        const match = text.match(/"page_logging":\s*(\{.*?\})\s*,\s*"qr"/s);
-        if (match) {
-            try {
-                const pageLogging = JSON.parse(match[1]);
-                if (pageLogging.params) {
-                    profileId = pageLogging.params.profile_id;
-                }
-            } catch (err) {
-                console.error("Parse error:", err);
-            }
-        }
-    });
-
-    return profileId;
-}
-
 function getIgAppId() {
     if (window._sharedData && window._sharedData.config) {
-        return window._sharedData.config.viewerId ? "936619743392459" : null;
+        return window._sharedData.config.viewerId || null;
     }
 
     const scripts = Array.from(document.querySelectorAll("script"));
@@ -33,7 +10,7 @@ function getIgAppId() {
         if (match) return match[1];
     }
 
-    return "936619743392459";
+    return null;
 }
 
 function getUsernameTracking() {
@@ -44,8 +21,33 @@ function getUsernameTracking() {
     return usernameFromUrl;
 }
 
-async function fetchAllFollowing(maxId = 0) {
-    const profileId = getUserIDTracking();
+
+async function fetchUserIDTracking() {
+    const xIgAppId = getIgAppId();
+    const usernameToTrack = getUsernameTracking();
+    const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${usernameToTrack}`;
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "accept": "*/*",
+                "x-ig-app-id": xIgAppId,
+            },
+            credentials: "include"
+        });
+
+        const data = await response.json();
+
+        const profileId = data.data.user.id;
+        return profileId;
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return [];
+    }
+}
+
+
+async function fetchAllFollowing(maxId = 0, profileId = null) {
     const xIgAppId = getIgAppId();
     const url = `https://www.instagram.com/api/v1/friendships/${profileId}/following/?count=50&max_id=${maxId}`;
     try {
@@ -64,7 +66,7 @@ async function fetchAllFollowing(maxId = 0) {
         const nextMaxId = data.next_max_id;
 
         if (nextMaxId) {
-            const nextPageUsernames = await fetchAllFollowing(nextMaxId);
+            const nextPageUsernames = await fetchAllFollowing(nextMaxId, profileId);
             return currentUsernames.concat(nextPageUsernames);
         } else {
             return currentUsernames;
@@ -84,7 +86,12 @@ async function trackFollowing() {
     const localStorageSaveKey = `fl_${usernameToTrack}`;
     const previousUsernames = JSON.parse(localStorage.getItem(localStorageSaveKey) || "[]");
 
-    const allUsernames = await fetchAllFollowing(0);
+    const profileId = await fetchUserIDTracking();
+    if (!profileId) {
+        console.error("Không xác định được profile ID.");
+        return;
+    }
+    const allUsernames = await fetchAllFollowing(0, profileId);
 
     const newUsers = allUsernames.filter(u => !previousUsernames.includes(u));
     const removedUsers = previousUsernames.filter(u => !allUsernames.includes(u));
