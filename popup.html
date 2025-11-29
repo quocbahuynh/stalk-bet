@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>IG Tracker</title>
@@ -57,6 +58,15 @@
             background-color: #138496;
         }
 
+        #followersBtn {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        #followersBtn:hover {
+            background-color: #218838;
+        }
+
         #output {
             margin-top: 12px;
             max-height: 250px;
@@ -64,7 +74,7 @@
             padding: 10px;
             background-color: #fff;
             border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             font-size: 13px;
             line-height: 1.4;
         }
@@ -74,7 +84,7 @@
         }
 
         #output::-webkit-scrollbar-thumb {
-            background-color: rgba(0,0,0,0.2);
+            background-color: rgba(0, 0, 0, 0.2);
             border-radius: 3px;
         }
 
@@ -83,13 +93,15 @@
         }
     </style>
 </head>
+
 <body>
-    <h3>IG Following Tracker</h3>
+    <h3>StalkBet</h3>
     <div class="username" id="usernameDisplay">Username: --</div>
-    <button id="startBtn">Start Tracking</button>
-    <button id="checkBtn">Check Changes</button>
+    <button id="trackFollowingBtn">Stalk Following</button>
+    <button id="trackFollowerBtn">Stalk Followers</button>
     <div id="output">Output will appear here...</div>
 
     <script src="popup.js"></script>
 </body>
+
 </html>

@@ -9,28 +9,28 @@ async function sendMessageToActiveTab(message) {
     });
 }
 
-document.getElementById("startBtn").addEventListener("click", async () => {
-    output.textContent = "Tracking started...";
-    const result = await sendMessageToActiveTab({ action: "TRACK_FOLLOWING" });
-    if (!result) {
-        output.textContent = "Cannot detect user or not on profile page!";
-        return;
-    }
-    output.innerHTML = `<b>Tracking initialized!</b><br>
-        New Users: ${result.newUsers.join(", ")}<br>
-        Removed Users: ${result.removedUsers.join(", ")}`;
-});
-
-document.getElementById("checkBtn").addEventListener("click", async () => {
+document.getElementById("trackFollowingBtn").addEventListener("click", async () => {
     output.textContent = "Checking changes...";
     const result = await sendMessageToActiveTab({ action: "TRACK_FOLLOWING" });
-    if (!result) {
-        output.textContent = "Cannot detect user or not on profile page!";
+    if (!result || (!result.newUsers && !result.removedUsers)) {
+        output.textContent = "Cannot detect user, not on profile page, or content script not loaded!";
         return;
     }
     output.innerHTML = `<b>Check result:</b><br>
-        New Users: ${result.newUsers.join(", ")}<br>
-        Removed Users: ${result.removedUsers.join(", ")}`;
+        New Users: ${(result.newUsers || []).join(", ")}<br>
+        Removed Users: ${(result.removedUsers || []).join(", ")}`;
+});
+
+document.getElementById("trackFollowerBtn").addEventListener("click", async () => {
+    output.textContent = "Checking changes...";
+    const result = await sendMessageToActiveTab({ action: "TRACK_FOLLOWERS" });
+    if (!result || (!result.newFollowers && !result.removedFollowers)) {
+        output.textContent = "Cannot detect user, not on profile page, or content script not loaded!";
+        return;
+    }
+    output.innerHTML = `<b>Check result:</b><br>
+        New Followers: ${(result.newFollowers || []).join(", ")}<br>
+        Removed Followers: ${(result.removedFollowers || []).join(", ")}`;
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
