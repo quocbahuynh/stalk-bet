@@ -69,13 +69,15 @@ async function fetchAllFollowing(maxId = 0, profileId = null) {
     }
 }
 
+
+
 async function trackFollowing() {
-    const usernameToTrack = getUsernameTracking();
-    if (!usernameToTrack) {
+    const userIDToTrack =  await fetchUserIDTracking();
+    if (!userIDToTrack) {
         console.error("⚠️ Không xác định được username để theo dõi.");
         return { newUsers: [], removedUsers: [] };
     }
-    const localStorageSaveKey = `fl_${usernameToTrack}`;
+    const localStorageSaveKey = `fl_${userIDToTrack}`;
     let previousUsernames = [];
     try {
         previousUsernames = JSON.parse(localStorage.getItem(localStorageSaveKey) || "[]");
