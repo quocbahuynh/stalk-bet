@@ -42,6 +42,10 @@ async function fetchUserIDTracking() {
     }
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function fetchAllFollowing(maxId = 0, profileId = null) {
     const xIgAppId = getIgAppId();
     const url = `https://www.instagram.com/api/v1/friendships/${profileId}/following/?count=50&max_id=${maxId}`;
@@ -58,6 +62,7 @@ async function fetchAllFollowing(maxId = 0, profileId = null) {
         const currentUsernames = data.users.map(u => u.username);
         const nextMaxId = data.next_max_id;
         if (nextMaxId) {
+            await sleep(300);
             const nextPageUsernames = await fetchAllFollowing(nextMaxId, profileId);
             return currentUsernames.concat(nextPageUsernames);
         } else {
@@ -86,6 +91,7 @@ async function fetchAllFollowers(maxId = 0, profileId = null) {
         console.log("⚠️ Fetched followers page:", currentUsernames);
         const nextMaxId = data.next_max_id;
         if (nextMaxId) {
+            await sleep(300);
             const nextPageUsernames = await fetchAllFollowers(nextMaxId, profileId);
             return currentUsernames.concat(nextPageUsernames);
         } else {
