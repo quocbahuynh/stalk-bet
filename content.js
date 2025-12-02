@@ -160,6 +160,36 @@ async function fetchArticles() {
     }
 }
 
+async function GetLikersOfArticle(mediaId) {
+    const csrftoken = getCsrftoken();
+    const xIgAppId = getIgAppId();
+
+    const headers = {
+        "accept": "*/*",
+        "x-ig-app-id": xIgAppId,
+        "x-csrftoken": csrftoken,
+    };
+
+    const url = `https://www.instagram.com/api/v1/media/${mediaId}/likers`;
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers,
+            credentials: "include",
+            redirect: "follow"
+        });
+        const text = await response.text();
+        try {
+            return JSON.parse(text);
+        } catch {
+            return text;
+        }
+    } catch (error) {
+        console.error("GetLikersOfArticle error:", error);
+        return null;
+    }
+}
 
 // IndexedDB helpers
 function openDB() {
